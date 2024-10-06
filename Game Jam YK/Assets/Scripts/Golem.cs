@@ -22,7 +22,7 @@ public class Golem : Enemy
 
         if (GetComponent<BoxCollider2D>().IsTouchingLayers(Controller.instance.groundLayer) && !PlayerMovement.STOP)
         {
-            if (frontCheck.IsTouchingLayers(Controller.instance.groundLayer) || frontCheck.IsTouchingLayers(Controller.instance.enemyLayer) || !bottomCheck.IsTouchingLayers(Controller.instance.groundLayer))
+            if (frontCheck.IsTouchingLayers(Controller.instance.groundLayer) || frontCheck.IsTouchingLayers(Controller.instance.enemyLayer) || !bottomCheck.IsTouchingLayers(Controller.instance.groundLayer) || !Controller.instance.SameRoom(transform.position, frontCheck.transform.position))
             {
                 facingRight = !facingRight;
             }

@@ -2,7 +2,6 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class Controller : MonoBehaviour
 {
@@ -18,12 +17,15 @@ public class Controller : MonoBehaviour
     public Sprite golem2;
     public Sprite archerReady;
     public Sprite archerShooting;
+    public Sprite voodooReady;
+    public Sprite voodooShooting;
     public SpriteRenderer[] hearts;
     public Sprite fullHeart;
     public Sprite noHeart;
     public Sprite deathTarot;
-    public Sprite deathTarotBW;
+    public Sprite deathTarotBehind;
     public SpriteRenderer deathTarotRenderer;
+    public SpriteRenderer countdown;
 
     public LayerMask SendEverythingExceptPlayerMask
     {
@@ -80,7 +82,7 @@ public class Controller : MonoBehaviour
         {
             hearts[i].sprite = i < player.health ? fullHeart : noHeart;
         }
-        deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBW;
+        deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBehind;
         if(player.transform.position.x <= 100)
         {
             Vector3 v = GetClosestCameraPosition(player.transform.position);

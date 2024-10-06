@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     protected BoxCollider2D bc;
     protected float timeOfGotHit;
     protected float timeOfDeath;
-    protected bool youAreAlreadyDead;
+    public bool youAreAlreadyDead;
     
 
     // Start is called before the first frame update
@@ -32,21 +32,25 @@ public class Enemy : MonoBehaviour
         return Time.time - timeOfGotHit < 0.35f;
     }
 
+    public void Kill()
+    {
+        if (PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))
+        {
+            Controller.instance.player.KilledEnemyWhileDead++;
+        }
+        timeOfDeath = Time.time;
+        bc.enabled = false;
+        rb.gravityScale = 0;
+        youAreAlreadyDead = true;
+    }
+
     // Update is called once per frame
     protected virtual void FixedUpdate()
     {
-        if((health <= 0 || (PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))) && !youAreAlreadyDead)
+        if ((health <= 0 || (PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))) && !youAreAlreadyDead)
         {
-            if(PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))
-            {
-                Controller.instance.player.KilledEnemyWhileDead++;
-            }
-            timeOfDeath = Time.time;
-            bc.enabled = false;
-            rb.gravityScale = 0;
-            youAreAlreadyDead = true;
+            Kill();
         }
-
         if (Time.time - timeOfDeath > 0.75f && youAreAlreadyDead)
         {
             Destroy(gameObject);

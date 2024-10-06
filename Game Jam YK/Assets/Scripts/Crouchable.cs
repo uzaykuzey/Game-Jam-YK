@@ -21,11 +21,11 @@ public class Crouchable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.C) && Input.GetKey(KeyCode.DownArrow))
+        if(Input.GetKey(KeyCode.DownArrow) && Time.time - timeOfCrouch >= 0.5)
         {
             timeOfCrouch = Time.time;
         }
-        if(!Crouching() && Controller.instance.player.transform.position.y > yPos)
+        if(Controller.instance.player.transform.position.y > yPos && !(Time.time-timeOfCrouch < 0.5 && Time.time - timeOfCrouch>0.2 && Input.GetKey(KeyCode.DownArrow)))
         {
             tCollider.forceSendLayers = Controller.instance.SendEverythingMask;
         }
@@ -35,9 +35,6 @@ public class Crouchable : MonoBehaviour
         }
     }
 
-    public static bool Crouching()
-    {
-        return Time.time - timeOfCrouch < 0.5f;
-    }
+
 
 }

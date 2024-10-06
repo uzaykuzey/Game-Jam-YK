@@ -30,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
     public Sprite deadSprite;
     public GameObject corpse; 
     public GameObject connection;
-    public SpriteRenderer countdown;
     public Sprite[] numberSprites;
     public int health;
     public string currentScene;
@@ -159,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
         
 
         corpse.GetComponent<SpriteRenderer>().enabled = !living;
-        countdown.enabled = !living;
+        Controller.instance.countdown.enabled = !living;
         if(!living && (Time.time-timeOfDeath>=5 || (Input.GetKey(KeyCode.Z) && Time.time - timeOfDeath >= 2)) && !STOP)
         {
             KilledEnemyWhileDead = 0;
@@ -186,11 +185,11 @@ public class PlayerMovement : MonoBehaviour
         {
             try
             {
-                countdown.sprite = numberSprites[4 - Mathf.FloorToInt(Time.time - timeOfDeath)];
+                Controller.instance.countdown.sprite = numberSprites[4 - Mathf.FloorToInt(Time.time - timeOfDeath)];
             }
             catch(IndexOutOfRangeException _)
             {
-                countdown.enabled = false;
+                Controller.instance.countdown.enabled = false;
             }
             
         }
@@ -225,7 +224,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (!Airborne())
         {
-            if (Time.time - timeOfC < 0.25f && (!Crouchable.Crouching()))
+            if (Time.time - timeOfC < 0.25f)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }

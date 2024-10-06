@@ -15,7 +15,7 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (rb.IsTouchingLayers(Controller.instance.groundLayer))
+        if (rb.IsTouchingLayers(Controller.instance.groundLayer) || rb.IsTouchingLayers(Controller.instance.swordLayer))
         {
             Destroy(gameObject);
         }
