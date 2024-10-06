@@ -15,7 +15,7 @@ public class Golem : Enemy
             return;
         }
 
-        if (Controller.instance.GetClosestCameraPosition(transform.position) != Controller.instance.GetClosestCameraPosition(Controller.instance.player.transform.position))
+        if (!Controller.instance.SameRoom(Controller.instance.player.transform.position, transform.position))
         {
             return;
         }

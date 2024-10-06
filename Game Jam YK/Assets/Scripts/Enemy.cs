@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
 
         if (Time.time - timeOfDeath > 0.75f && youAreAlreadyDead)
         {
-            Destroy();
+            Destroy(gameObject);
         }
 
         if (Time.time - timeOfDeath < 0.75f)
@@ -88,10 +88,5 @@ public class Enemy : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
-    }
-
-    public virtual void Destroy()
-    {
-        Destroy(gameObject);
     }
 }

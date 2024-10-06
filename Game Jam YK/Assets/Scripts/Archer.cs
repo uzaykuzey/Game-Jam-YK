@@ -23,7 +23,7 @@ public class Archer : Enemy
         {
             return;
         }
-        if(Controller.instance.GetClosestCameraPosition(transform.position) != Controller.instance.GetClosestCameraPosition(Controller.instance.player.transform.position))
+        if(!Controller.instance.SameRoom(Controller.instance.player.transform.position, transform.position))
         {
             return;
         }
@@ -51,12 +51,5 @@ public class Archer : Enemy
         }
 
         
-    }
-
-    public override void Destroy()
-    {
-        Destroy(bullet);
-        Destroy(this);
-        base.Destroy();
     }
 }

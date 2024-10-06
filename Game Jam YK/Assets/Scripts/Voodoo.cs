@@ -16,6 +16,10 @@ public class Voodoo : Enemy
         {
             return;
         }
+        if(!Controller.instance.SameRoom(Controller.instance.player.transform.position, transform.position))
+        {
+            return;
+        }
 
         if (Mathf.FloorToInt(Time.time * 5f) % 10 == 0)
         {

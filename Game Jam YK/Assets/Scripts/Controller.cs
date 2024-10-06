@@ -81,10 +81,25 @@ public class Controller : MonoBehaviour
             hearts[i].sprite = i < player.health ? fullHeart : noHeart;
         }
         deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBW;
-        Vector3 v = GetClosestCameraPosition(player.transform.position);
-        if (mainCamera.transform.position != v)
+        if(player.transform.position.x <= 100)
         {
-            mainCamera.transform.DOMove(v, 1).SetEase(Ease.Linear);
+            Vector3 v = GetClosestCameraPosition(player.transform.position);
+            if (mainCamera.transform.position != v)
+            {
+                mainCamera.transform.DOMove(v, 1).SetEase(Ease.Linear);
+            }
         }
+        else
+        {
+            mainCamera.transform.DOMove(new Vector3(player.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z), 0.2f);
+        }
+
+    }
+
+    public bool SameRoom(Vector3 pos1, Vector3 pos2)
+    {
+        Vector3 v1 = GetClosestCameraPosition(pos1);
+        Vector3 v2 = GetClosestCameraPosition(pos2);
+        return v1 == v2 || (v1.x > 90 && v2.x > 90);
     }
 }
