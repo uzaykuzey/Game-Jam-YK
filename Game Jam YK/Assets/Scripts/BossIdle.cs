@@ -12,11 +12,8 @@ public class BossIdle : StateMachineBehaviour
     {
         behavior = animator.GetComponent<BossActions>();
         phase = behavior.phase;
-    }
 
-    // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
+
         if (phase == 1)
         {
             waitTime = 50;
@@ -29,9 +26,12 @@ public class BossIdle : StateMachineBehaviour
         {
             waitTime = 25;
         }
-
-        int temp = Random.Range(0, 2);
-        if (temp == 0 || true)
+        IEnumerator StallExecution()
+        {
+            yield return new WaitForSeconds(waitTime / 100);
+        }
+        int temp = Random.Range(0, 100);
+        if (temp < 40)
         {
             animator.SetTrigger("Run");
         }
@@ -39,6 +39,14 @@ public class BossIdle : StateMachineBehaviour
         {
             animator.SetTrigger("Cast");
         }
+    }
+
+    // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+    
+
+
     }
 
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state

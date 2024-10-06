@@ -2,7 +2,6 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.VisualScripting.Metadata;
 
 public class Enemy : MonoBehaviour
 {
@@ -79,11 +78,15 @@ public class Enemy : MonoBehaviour
                     timeOfShowingShield = Time.time;
                     hasShield = false;
                 }
-                else if(Time.time - timeOfShowingShield > 0.5f)
+                else if(Time.time - timeOfShowingShield > 0.5f && gameObject.name!="Boss")
                 {
                     Kill();
                 }
             }
+        }
+        if(!PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))
+        {
+            Controller.instance.PlayAudio(Controller.instance.golem);
         }
         if (shieldRenderer != null)
         {
@@ -117,8 +120,8 @@ public class Enemy : MonoBehaviour
                 {
                     rb.velocity = new Vector2((Controller.instance.player.LookingRight ? 1 : -1) * 2, 2);
                 }
-                Controller.instance.player.DownStroke();
             }
+            Controller.instance.player.DownStroke();
         }
 
 

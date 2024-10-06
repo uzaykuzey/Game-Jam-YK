@@ -96,7 +96,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (!Attacking() && Input.GetKey(KeyCode.Z) && Time.time - timeOfAttack > 0.5f && living)
         {
-            timeOfAttack=Time.time;
+            Controller.instance.PlayAudio(Controller.instance.sword);
+            timeOfAttack =Time.time;
             downAttack = Input.GetKey(KeyCode.DownArrow) && Airborne();
             if(!downAttack)
             {
@@ -123,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void GameOver()
     {
-        SceneManager.LoadScene(currentScene);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void FixedUpdate()
@@ -172,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
                     health = 3;
                     living = true;
                     timeOfGotHit= Time.time;
-                    
+                    Controller.instance.PlayAudio(Controller.instance.realive);
                 }
                 else
                 {

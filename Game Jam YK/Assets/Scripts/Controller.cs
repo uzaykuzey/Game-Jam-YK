@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Controller : MonoBehaviour
 {
@@ -28,6 +29,20 @@ public class Controller : MonoBehaviour
     public Sprite brokenCircle;
     public SpriteRenderer deathTarotRenderer;
     public SpriteRenderer countdown;
+
+    public AudioClip music;
+    public AudioClip teleport;
+    public AudioClip golem;
+    public AudioClip snowballs;
+    public AudioClip realive;
+    public AudioClip sword;
+
+    public AudioSource audioSource;
+
+    public void PlayAudio(AudioClip audioClip)
+    {
+        AudioSource.PlayClipAtPoint(audioClip, mainCamera.transform.position);
+    }
 
     public LayerMask SendEverythingExceptPlayerMask
     {
@@ -64,6 +79,10 @@ public class Controller : MonoBehaviour
     void Start()
     {
         instance = this;
+        if(SceneManager.GetActiveScene().name=="Boss")
+        {
+            return;
+        }
         cameraPositions = GetAllChildren(cameraPositionsObject);
     }
 
@@ -85,7 +104,13 @@ public class Controller : MonoBehaviour
             hearts[i].sprite = i < player.health ? fullHeart : noHeart;
         }
         deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBehind;
-        if(player.transform.position.x <= 100)
+
+        if (SceneManager.GetActiveScene().name == "Boss")
+        {
+            return;
+        }
+
+        if (player.transform.position.x <= 100)
         {
             Vector3 v = GetClosestCameraPosition(player.transform.position);
             if (mainCamera.transform.position != v)
@@ -98,6 +123,10 @@ public class Controller : MonoBehaviour
             mainCamera.transform.DOMove(new Vector3(player.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z), 0.2f);
         }
 
+        if(player.transform.position.x> 238.05)
+        {
+            SceneManager.LoadScene("Boss");
+        }
     }
 
     public bool SameRoom(Vector3 pos1, Vector3 pos2)
