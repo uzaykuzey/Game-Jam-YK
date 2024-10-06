@@ -23,6 +23,10 @@ public class Archer : Enemy
         {
             return;
         }
+        if(Controller.instance.GetClosestCameraPosition(transform.position) != Controller.instance.GetClosestCameraPosition(Controller.instance.player.transform.position))
+        {
+            return;
+        }
         facingRight = Controller.instance.player.transform.position.x > transform.position.x;
 
         if(Mathf.FloorToInt(Time.time * (voodoo ? 10f: 5f)) % 10 == 0)

@@ -15,6 +15,11 @@ public class Golem : Enemy
             return;
         }
 
+        if (Controller.instance.GetClosestCameraPosition(transform.position) != Controller.instance.GetClosestCameraPosition(Controller.instance.player.transform.position))
+        {
+            return;
+        }
+
         if (GetComponent<BoxCollider2D>().IsTouchingLayers(Controller.instance.groundLayer) && !PlayerMovement.STOP)
         {
             if (frontCheck.IsTouchingLayers(Controller.instance.groundLayer) || frontCheck.IsTouchingLayers(Controller.instance.enemyLayer) || !bottomCheck.IsTouchingLayers(Controller.instance.groundLayer))

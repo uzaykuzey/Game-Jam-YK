@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class Controller : MonoBehaviour
 {
@@ -38,20 +39,17 @@ public class Controller : MonoBehaviour
             return sendEverything.forceSendLayers;
         }
     }
-    public Vector3 GetClosestCameraPosition
+    public Vector3 GetClosestCameraPosition(Vector3 pos)
     {
-        get 
+        Vector3 distance = new Vector3(int.MaxValue, int.MaxValue, 0);
+        foreach(Vector3 v in cameraPositions)
         {
-            Vector3 distance = new Vector3(int.MaxValue, int.MaxValue, 0);
-            foreach(Vector3 v in cameraPositions)
+            if ((v - pos).magnitude < (distance- pos).magnitude)
             {
-                if ((v - player.transform.position).magnitude < (distance-player.transform.position).magnitude)
-                {
-                    distance = v;
-                }
+                distance = v;
             }
-            return new Vector3(distance.x, distance.y, mainCamera.transform.position.z);
         }
+        return new Vector3(distance.x, distance.y, mainCamera.transform.position.z);
     }
 
     private List<Vector3> cameraPositions;
@@ -83,7 +81,7 @@ public class Controller : MonoBehaviour
             hearts[i].sprite = i < player.health ? fullHeart : noHeart;
         }
         deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBW;
-        Vector3 v = GetClosestCameraPosition;
+        Vector3 v = GetClosestCameraPosition(player.transform.position);
         if (mainCamera.transform.position != v)
         {
             mainCamera.transform.DOMove(v, 1).SetEase(Ease.Linear);
