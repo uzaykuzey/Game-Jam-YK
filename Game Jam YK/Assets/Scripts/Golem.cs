@@ -2,16 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SmallGolem : Enemy
+public class Golem : Enemy
 {
     public BoxCollider2D bottomCheck;
     public BoxCollider2D frontCheck;
-    public int force;
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if(Time.time - timeOfDeath < 0.75f)
+        if(youAreAlreadyDead)
         {
             return;
         }
@@ -23,7 +22,7 @@ public class SmallGolem : Enemy
                 facingRight = !facingRight;
             }
 
-            if (Time.time - timeOfGotHit > 0.5f)
+            if (Time.time - timeOfGotHit > 0.5f || knockBackRes)
             {
                 rb.velocity = (new Vector2(3 * (facingRight ? 1 : -1), rb.velocity.y));
             }

@@ -15,15 +15,17 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(real)
+        if (rb.IsTouchingLayers(Controller.instance.groundLayer))
+        {
+            Destroy(gameObject);
+        }
+
+        if (real)
         {
             return;
         }
         rb.velocity = new Vector2(5 * (facingRight ? 1: -1), 0);
-        if(rb.IsTouchingLayers(Controller.instance.groundLayer))
-        {
-            Destroy(gameObject);
-        }
+
 
         if (facingRight)
         {

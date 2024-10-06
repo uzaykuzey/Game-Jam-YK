@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class Archer : Enemy
 {
     public GameObject bullet;
     public bool fired;
+    public bool voodoo;
 
     protected override void Start()
     {
@@ -17,18 +19,19 @@ public class Archer : Enemy
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (Time.time - timeOfDeath < 0.75f)
+        if (youAreAlreadyDead)
         {
             return;
         }
         facingRight = Controller.instance.player.transform.position.x > transform.position.x;
 
-        if(Mathf.FloorToInt(Time.time * 5f) % 10 == 0)
+        if(Mathf.FloorToInt(Time.time * (voodoo ? 10f: 5f)) % 10 == 0)
         {
             if(!fired)
             {
                 fired = true;
                 GameObject go = Instantiate(bullet);
+                go.GetComponent<Bullet>().enabled = true;
                 go.GetComponent<Bullet>().real = false;
                 go.GetComponent<SpriteRenderer>().enabled = true;
                 go.GetComponent<BoxCollider2D>().enabled = true;
@@ -49,6 +52,7 @@ public class Archer : Enemy
     public override void Destroy()
     {
         Destroy(bullet);
+        Destroy(this);
         base.Destroy();
     }
 }

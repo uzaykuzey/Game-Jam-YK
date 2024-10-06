@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
     private bool dashRight;
     private bool canDash;
     private float timeOfGotHit;
-    private bool living;
+    public bool living;
     private Vector2 corpsePos;
     private Vector2 corpseCenter;
     private float timeOfDeath;
@@ -99,7 +99,6 @@ public class PlayerMovement : MonoBehaviour
         {
             timeOfAttack=Time.time;
             downAttack = Input.GetKey(KeyCode.DownArrow) && Airborne();
-            print(downAttack);
             if(!downAttack)
             {
                 rb.velocity += new Vector2((LookingRight ? -1 : 1) * 5, 0);
@@ -123,6 +122,11 @@ public class PlayerMovement : MonoBehaviour
         return !groundChecker.IsTouchingLayers(Controller.instance.groundLayer);
     }
 
+    public void GameOver()
+    {
+        SceneManager.LoadScene(currentScene);
+    }
+
     private void FixedUpdate()
     {
         Sprite currentSprite=idleSprite;
@@ -131,7 +135,12 @@ public class PlayerMovement : MonoBehaviour
         {
             if(living)
             {
+                if (!hasDeathCard)
+                {
+                    GameOver();
+                }
                 living = false;
+                hasDeathCard = false;
                 corpsePos = transform.position;
                 corpseCenter = center.transform.position;
                 timeOfDeath=Time.time;
@@ -151,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
 
         corpse.GetComponent<SpriteRenderer>().enabled = !living;
         countdown.enabled = !living;
-        if(!living && (Time.time-timeOfDeath>=5 || Input.GetKey(KeyCode.Z)) && !STOP)
+        if(!living && (Time.time-timeOfDeath>=5 || (Input.GetKey(KeyCode.Z) && Time.time - timeOfDeath >= 2)) && !STOP)
         {
             KilledEnemyWhileDead = 0;
             STOP = true;
@@ -161,13 +170,14 @@ public class PlayerMovement : MonoBehaviour
                 STOP = false;
                 if (KilledEnemyWhileDead>0)
                 {
-                    health = KilledEnemyWhileDead;
+                    health = 3;
                     living = true;
                     timeOfGotHit= Time.time;
+                    
                 }
                 else
                 {
-                    SceneManager.LoadScene(currentScene);
+                    GameOver();
                 }
             };
         }

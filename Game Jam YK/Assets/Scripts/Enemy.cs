@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     public int health;
     public bool facingRight;
-
+    public bool knockBackRes;
 
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
@@ -64,7 +64,10 @@ public class Enemy : MonoBehaviour
         {
             health--;
             timeOfGotHit = Time.time;
-            rb.velocity = new Vector2((Controller.instance.player.LookingRight ? 1 : -1) * 2, 2);
+            if(!knockBackRes)
+            {
+                rb.velocity = new Vector2((Controller.instance.player.LookingRight ? 1 : -1) * 2, 2);
+            }
             Controller.instance.player.DownStroke();
         }
 
