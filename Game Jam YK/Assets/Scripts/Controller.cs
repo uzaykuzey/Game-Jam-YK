@@ -11,7 +11,19 @@ public class Controller : MonoBehaviour
     public LayerMask groundLayer;
     public LayerMask playerLayer;
     public LayerMask enemyLayer;
-    public Camera camera;
+    public Camera mainCamera;
+    public Sprite explosion;
+    public Sprite golem1;
+    public Sprite golem2;
+    public Sprite archerReady;
+    public Sprite archerShooting;
+    public SpriteRenderer[] hearts;
+    public Sprite fullHeart;
+    public Sprite noHeart;
+    public Sprite deathTarot;
+    public Sprite deathTarotBW;
+    public SpriteRenderer deathTarotRenderer;
+
     public LayerMask SendEverythingExceptPlayerMask
     {
         get
@@ -38,7 +50,7 @@ public class Controller : MonoBehaviour
                     distance = v;
                 }
             }
-            return new Vector3(distance.x, distance.y, camera.transform.position.z);
+            return new Vector3(distance.x, distance.y, mainCamera.transform.position.z);
         }
     }
 
@@ -66,10 +78,15 @@ public class Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 v = GetClosestCameraPosition;
-        if (camera.transform.position != v)
+        for (int i = 0; i < hearts.Length; i++)
         {
-            camera.transform.DOMove(v, 1).SetEase(Ease.Linear);
+            hearts[i].sprite = i < player.health ? fullHeart : noHeart;
+        }
+        deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBW;
+        Vector3 v = GetClosestCameraPosition;
+        if (mainCamera.transform.position != v)
+        {
+            mainCamera.transform.DOMove(v, 1).SetEase(Ease.Linear);
         }
     }
 }

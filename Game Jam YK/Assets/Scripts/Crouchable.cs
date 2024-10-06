@@ -10,7 +10,7 @@ public class Crouchable : MonoBehaviour
 
     private CompositeCollider2D tCollider;
 
-    public int yPos;
+    public float yPos;
 
     private void Start()
     {
@@ -23,7 +23,6 @@ public class Crouchable : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.C) && Input.GetKey(KeyCode.DownArrow))
         {
-        
             timeOfCrouch = Time.time;
         }
         if(!Crouching() && Controller.instance.player.transform.position.y > yPos)

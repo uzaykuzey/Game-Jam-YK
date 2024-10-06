@@ -5,24 +5,19 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public int health;
-    public bool moving;
-    public BoxCollider2D rightCheck;
-    public BoxCollider2D frontCheck;
     public bool facingRight;
-    public int force;
-    public Sprite explosionSprite;
 
 
-    private Rigidbody2D rb;
-    private SpriteRenderer sr;
-    private BoxCollider2D bc;
-    private float timeOfGotHit;
-    private float timeOfDeath;
-    private bool youAreAlreadyDead;
+    protected Rigidbody2D rb;
+    protected SpriteRenderer sr;
+    protected BoxCollider2D bc;
+    protected float timeOfGotHit;
+    protected float timeOfDeath;
+    protected bool youAreAlreadyDead;
     
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         rb=GetComponent<Rigidbody2D>();
         sr=GetComponent<SpriteRenderer>();
@@ -38,7 +33,7 @@ public class Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if((health <= 0 || (PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))) && !youAreAlreadyDead)
         {
@@ -54,13 +49,13 @@ public class Enemy : MonoBehaviour
 
         if (Time.time - timeOfDeath > 0.75f && youAreAlreadyDead)
         {
-            Destroy(gameObject);
+            Destroy();
         }
 
         if (Time.time - timeOfDeath < 0.75f)
         {
             rb.velocity = new Vector2(0, 0);
-            sr.sprite = explosionSprite;
+            sr.sprite = Controller.instance.explosion;
             sr.color = Color.white;
             return;
         }
@@ -82,20 +77,6 @@ public class Enemy : MonoBehaviour
             sr.color = new Color(sr.color.r, sr.color.g, sr.color.b);
         }
 
-        if(moving && GetComponent<BoxCollider2D>().IsTouchingLayers(Controller.instance.groundLayer) && !PlayerMovement.STOP)
-        {
-            if(frontCheck.IsTouchingLayers(Controller.instance.groundLayer) || !rightCheck.IsTouchingLayers(Controller.instance.groundLayer))
-            {
-                facingRight = !facingRight;
-            }
-
-            if(Time.time - timeOfGotHit > 0.5f)
-            {
-                rb.velocity = (new Vector2(3 * (facingRight ? 1 : -1), rb.velocity.y));
-            }
-
-        }
-
         if (facingRight)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -104,9 +85,10 @@ public class Enemy : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
-
-
     }
 
-
+    public virtual void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }

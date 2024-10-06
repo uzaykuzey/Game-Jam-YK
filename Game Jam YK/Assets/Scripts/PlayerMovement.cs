@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public int jumpForce;
     public int maxSpeed;
     public BoxCollider2D groundChecker;
-    public GameObject hitObjectFront; 
+    public GameObject hitObjectFront;
+    public GameObject hitObjectDown;
     public Sprite idleSprite;
     public Sprite runningSprite1;
     public Sprite runningSprite2;
@@ -20,17 +21,21 @@ public class PlayerMovement : MonoBehaviour
     public Sprite idleAttack2;
     public Sprite runningAttack1;
     public Sprite runningAttack2;
+    public Sprite airborne;
+    public Sprite airborneAttack1;
+    public Sprite airborneAttack2;
+    public Sprite downAttack1;
+    public Sprite downAttack2;
+    public Sprite dashSprite;
     public Sprite deadSprite;
     public GameObject corpse; 
     public GameObject connection;
     public SpriteRenderer countdown;
     public Sprite[] numberSprites;
-    public SpriteRenderer[] hearts;
-    public Sprite fullHeart;
-    public Sprite noHeart;
     public int health;
     public string currentScene;
     public GameObject center;
+    public bool hasDeathCard;
 
     private Rigidbody2D rb;
     private BoxCollider2D bc;
@@ -66,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
         LookingRight = true;
         canDash = true;
         living = true;
+        hasDeathCard = true;
     }
 
     public bool Invulnarable()
@@ -92,7 +98,8 @@ public class PlayerMovement : MonoBehaviour
         if (!Attacking() && Input.GetKey(KeyCode.Z) && Time.time - timeOfAttack > 0.5f && living)
         {
             timeOfAttack=Time.time;
-            downAttack = Input.GetKey(KeyCode.DownArrow);
+            downAttack = Input.GetKey(KeyCode.DownArrow) && Airborne();
+            print(downAttack);
             if(!downAttack)
             {
                 rb.velocity += new Vector2((LookingRight ? -1 : 1) * 5, 0);
@@ -103,12 +110,17 @@ public class PlayerMovement : MonoBehaviour
 
     public bool Dashing()
     {
-        return Time.time - timeOfDash < 0.099f;
+        return Time.time - timeOfDash < 0.2f;
     }
 
     public bool Attacking()
     {
         return Time.time - timeOfAttack < 0.2f;
+    }
+
+    public bool Airborne()
+    {
+        return !groundChecker.IsTouchingLayers(Controller.instance.groundLayer);
     }
 
     private void FixedUpdate()
@@ -139,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
 
         corpse.GetComponent<SpriteRenderer>().enabled = !living;
         countdown.enabled = !living;
-        if(!living && Time.time-timeOfDeath>=5 && !STOP)
+        if(!living && (Time.time-timeOfDeath>=5 || Input.GetKey(KeyCode.Z)) && !STOP)
         {
             KilledEnemyWhileDead = 0;
             STOP = true;
@@ -159,6 +171,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             };
         }
+
         if(!living)
         {
             try
@@ -197,15 +210,16 @@ public class PlayerMovement : MonoBehaviour
 
         if(walking)
         {
-            currentSprite = Mathf.FloorToInt(Time.time * 5) % 2 == 0 ? this.runningSprite1 : this.runningSprite2;
+            currentSprite = Mathf.FloorToInt(Time.time * 5) % 2 == 0 ? runningSprite1 : runningSprite2;
         }
 
-        if (groundChecker.IsTouchingLayers(Controller.instance.groundLayer) && !Crouchable.Crouching())
+        if (!Airborne())
         {
-            if (Time.time - timeOfC < 0.25f)
+            if (Time.time - timeOfC < 0.25f && (!Crouchable.Crouching()))
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
+           
             canDash = true;
         }
 
@@ -221,7 +235,6 @@ public class PlayerMovement : MonoBehaviour
             health--;
             timeOfGotHit = Time.time;
             rb.velocity = new Vector2((LookingRight ? -1 : 1) * maxSpeed*2, jumpForce*0.9f);
-            timeOfDash = Time.time - 0.1f;
         }
 
         if(bc.IsTouchingLayers(Controller.instance.groundLayer))
@@ -229,11 +242,7 @@ public class PlayerMovement : MonoBehaviour
             timeOfC = -10;
         }
 
-        if (Dashing())
-        {
-            rb.velocity = new Vector2(20 * (dashRight ? 1: -1), 0);
-            LookingRight = dashRight;
-        }
+
         
         if(!Attacking())
         {
@@ -247,13 +256,36 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         hitObjectFront.GetComponent<BoxCollider2D>().enabled = Attacking() && !downAttack;
-        hitObjectFront.GetComponent<SpriteRenderer>().enabled = Attacking() && !downAttack;
+        hitObjectDown.GetComponent<BoxCollider2D>().enabled = Attacking() && downAttack;
 
-        if(Attacking())
+        if (Airborne())
         {
-            if(walking)
+            currentSprite = airborne;
+        }
+
+        if (Dashing())
+        {
+            rb.velocity = new Vector2(maxSpeed * 3.5f * (dashRight ? 1 : -1), 0);
+            LookingRight = dashRight;
+            currentSprite = dashSprite;
+        }
+
+        if (Attacking())
+        {
+            if (downAttack)
             {
-                currentSprite = (Mathf.FloorToInt((Time.time - timeOfAttack) * 10) % 2 == 0) ? runningAttack1 : runningAttack2;
+                currentSprite = (Mathf.FloorToInt((Time.time - timeOfAttack) * 10) % 2 == 0) ? downAttack1 : downAttack2;
+            }
+            else if (walking)
+            {
+                if(Airborne())
+                {
+                   currentSprite = (Mathf.FloorToInt((Time.time - timeOfAttack) * 10) % 2 == 0) ? airborneAttack1 : airborneAttack2;
+                }
+                else
+                {
+                    currentSprite = (Mathf.FloorToInt((Time.time - timeOfAttack) * 10) % 2 == 0) ? runningAttack1 : runningAttack2;
+                }
             }
             else
             {
@@ -281,10 +313,7 @@ public class PlayerMovement : MonoBehaviour
             connection.transform.SetPositionAndRotation((pos + corpseCenter) / 2f, Quaternion.Euler(0, 0, angle*180f/Mathf.PI + 90f));
         }
 
-        for(int i=0; i<hearts.Length; i++)
-        {
-            hearts[i].sprite = i < health ? fullHeart : noHeart;
-        }
+
     }
 
     public void DownStroke()
