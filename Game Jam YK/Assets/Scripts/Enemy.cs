@@ -1,12 +1,16 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.VisualScripting.Metadata;
 
 public class Enemy : MonoBehaviour
 {
     public int health;
     public bool facingRight;
     public bool knockBackRes;
+    public bool hasShield;
+    public SpriteRenderer shieldRenderer;
 
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
@@ -14,6 +18,9 @@ public class Enemy : MonoBehaviour
     protected float timeOfGotHit;
     protected float timeOfDeath;
     public bool youAreAlreadyDead;
+    private float timeOfShowingShield;
+
+    public static Color shieldColor = new(0.6379494f, 0.9056604f, 0.8986688f, 0.5294118f);
     
 
     // Start is called before the first frame update
@@ -25,6 +32,21 @@ public class Enemy : MonoBehaviour
         timeOfGotHit = -10;
         timeOfDeath = -10;
         youAreAlreadyDead = false;
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject.name.ToLower().Equals("shield"))
+            {
+                shieldRenderer=child.GetComponent<SpriteRenderer>();
+            }
+        }
+        if(shieldRenderer!=null)
+        {
+            shieldRenderer.enabled = false;
+            shieldRenderer.color = shieldColor;
+            shieldRenderer.transform.position = new Vector3(shieldRenderer.transform.position.x, shieldRenderer.transform.position.y, -0.51f);
+        }
+
+        timeOfShowingShield = -10;
     }
 
     public bool Invulnarable()
@@ -34,10 +56,6 @@ public class Enemy : MonoBehaviour
 
     public void Kill()
     {
-        if (PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))
-        {
-            Controller.instance.player.KilledEnemyWhileDead++;
-        }
         timeOfDeath = Time.time;
         bc.enabled = false;
         rb.gravityScale = 0;
@@ -47,9 +65,30 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     protected virtual void FixedUpdate()
     {
-        if ((health <= 0 || (PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))) && !youAreAlreadyDead)
+        if(!youAreAlreadyDead)
         {
-            Kill();
+            if (health <= 0)
+            {
+                Kill();
+            }
+            if((PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer)))
+            {
+                Controller.instance.player.KilledEnemyWhileDead++;
+                if (hasShield)
+                {
+                    timeOfShowingShield = Time.time;
+                    hasShield = false;
+                }
+                else if(Time.time - timeOfShowingShield > 0.5f)
+                {
+                    Kill();
+                }
+            }
+        }
+        if (shieldRenderer != null)
+        {
+            shieldRenderer.enabled = Time.time - timeOfShowingShield < 0.5f;
+            shieldRenderer.sprite = hasShield ? Controller.instance.circle : Controller.instance.brokenCircle;
         }
         if (Time.time - timeOfDeath > 0.75f && youAreAlreadyDead)
         {
@@ -66,14 +105,23 @@ public class Enemy : MonoBehaviour
 
         if(bc.IsTouchingLayers(Controller.instance.swordLayer) && !Invulnarable())
         {
-            health--;
-            timeOfGotHit = Time.time;
-            if(!knockBackRes)
+            if(hasShield)
             {
-                rb.velocity = new Vector2((Controller.instance.player.LookingRight ? 1 : -1) * 2, 2);
+                timeOfShowingShield = Time.time;
             }
-            Controller.instance.player.DownStroke();
+            if (!hasShield)
+            {
+                health--;
+                timeOfGotHit = Time.time;
+                if (!knockBackRes)
+                {
+                    rb.velocity = new Vector2((Controller.instance.player.LookingRight ? 1 : -1) * 2, 2);
+                }
+                Controller.instance.player.DownStroke();
+            }
         }
+
+
 
         if(Invulnarable())
         {

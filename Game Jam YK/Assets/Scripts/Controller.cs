@@ -24,6 +24,8 @@ public class Controller : MonoBehaviour
     public Sprite noHeart;
     public Sprite deathTarot;
     public Sprite deathTarotBehind;
+    public Sprite circle;
+    public Sprite brokenCircle;
     public SpriteRenderer deathTarotRenderer;
     public SpriteRenderer countdown;
 
@@ -91,7 +93,7 @@ public class Controller : MonoBehaviour
                 mainCamera.transform.DOMove(v, 1).SetEase(Ease.Linear);
             }
         }
-        else
+        else if(mainCamera.transform.position.x < 221.327 || player.transform.position.x < 221.327)
         {
             mainCamera.transform.DOMove(new Vector3(player.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z), 0.2f);
         }
