@@ -70,5 +70,11 @@ public class BossActions : MonoBehaviour
             closestCollider = laserColliders[2];
         }
         closestCollider.GetComponent<Animator>().Play("LaserShoot");
+        if(phase==2)
+        {
+            laserColliders[3].transform.position = new Vector3(Controller.instance.player.transform.position.x, laserColliders[3].transform.position.y, laserColliders[3].transform.position.z);
+            laserColliders[3].GetComponent<Animator>().Play("LaserShoot");
+        }
+        Controller.instance.PlayAudio(Controller.instance.laserBlast);
     }
 }

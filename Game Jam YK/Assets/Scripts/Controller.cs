@@ -42,15 +42,49 @@ public class Controller : MonoBehaviour
     public AudioClip realive;
     public AudioClip sword;
     public AudioClip boom;
+    public AudioClip laserBlast;
+    public AudioClip shield;
+    public AudioClip shieldBreak;
+    public AudioClip jump;
 
-    public AudioSource soundEffectPlayer;
     public AudioSource MY_MUSIC_PLAYER;
+
+    private List<AudioSource> tempSources;
 
     private bool[] spinning;
 
-    public void PlayAudio(AudioClip audioClip)
+    public void PlayAudio(AudioClip audioClip, bool bigGolem=false)
     {
-        AudioSource.PlayClipAtPoint(audioClip, mainCamera.transform.position);
+        if(tempSources==null)
+        {
+            tempSources = new();
+        }
+        for(int i=0;i<tempSources.Count;i++)
+        {
+            if (tempSources[i].clip == audioClip)
+            {
+                if (!tempSources[i].isPlaying)
+                {
+                    tempSources[i].pitch = 1 + (audioClip.name.ToLower() == "small golem sound" ? 0: Random.Range(-0.2f, 0.2f));
+                    if(bigGolem)
+                    {
+                        tempSources[i].pitch = 0.3f;
+                    }
+                    tempSources[i].Play();
+                }
+                return;
+            }
+        }
+        AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 0;
+        audioSource.clip = audioClip;
+        audioSource.pitch = 1;
+        if (bigGolem)
+        {
+            audioSource.pitch = 0.3f;
+        }
+        audioSource.Play();
+        tempSources.Add(audioSource);
     }
 
     public LayerMask SendEverythingExceptPlayerMask
@@ -89,13 +123,13 @@ public class Controller : MonoBehaviour
     {
         instance = this;
         spinning = new bool[4];
+
         if (SceneManager.GetActiveScene().name=="Boss")
         {
             return;
         }
         cameraPositions = GetAllChildren(cameraPositionsObject);
-        soundEffectPlayer.spatialBlend = 0.0f;
-        MY_MUSIC_PLAYER.spatialBlend=0.0f;
+        tempSources = new();
     }
 
     List<Vector3> GetAllChildren(GameObject parent)
@@ -111,6 +145,7 @@ public class Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
+        transform.position=mainCamera.transform.position;
         for (int i = 0; i < hearts.Length; i++)
         {
             if(i<player.health && hearts[i].sprite.name == noHeart.name && !spinning[i])

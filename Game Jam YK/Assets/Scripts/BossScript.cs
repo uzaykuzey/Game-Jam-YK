@@ -9,12 +9,16 @@ public class BossScript : Enemy
     private float startTime;
     private bool spawnOnce = false;
     [SerializeField] private GameObject deathCard;
+    
+    private float shieldRegenTime;
+    private int neededTimeToPass;
 
     protected override void Start()
     {
         base.Start();
         activatedShieldYet = false;
         startTime = Time.time;
+        shieldRegenTime = int.MaxValue;
     }
 
     protected override void FixedUpdate()
@@ -24,6 +28,8 @@ public class BossScript : Enemy
         {
             activatedShieldYet=true;
             hasShield = true;
+            shieldRegenTime = Time.time;
+            neededTimeToPass = Random.Range(15,20);
             GetComponent<BossActions>().phase = 2;
         }
 
@@ -32,11 +38,11 @@ public class BossScript : Enemy
             SceneManager.LoadScene("Ending");
         }
 
-        if(sr.sprite.name== "Last_boss_standing")
+        if(sr.sprite.name == "Last_boss_standing")
         {
             Controller.instance.bossOverlayRenderer.sprite = Controller.instance.normalOverlay;
         }
-        else if(sr.sprite.name== "Last_boss_attack")
+        else if(sr.sprite.name == "Last_boss_attack")
         {
             Controller.instance.bossOverlayRenderer.sprite = Controller.instance.attackOverlay;
         }
@@ -52,9 +58,10 @@ public class BossScript : Enemy
             }
         }
 
-        if (Mathf.FloorToInt(Time.time - startTime)%20==5 && !Controller.instance.player.hasDeathCard)
+        if (Time.time-shieldRegenTime > neededTimeToPass && !Controller.instance.player.hasDeathCard && hasShield)
         {
-            if(spawnOnce)
+            shieldRegenTime = int.MaxValue;
+            if (spawnOnce)
             {
                 spawnOnce = false;
                 Vector3 pos;

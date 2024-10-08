@@ -78,6 +78,7 @@ public class Enemy : MonoBehaviour
                 {
                     timeOfShowingShield = Time.time;
                     hasShield = false;
+                    Controller.instance.PlayAudio(Controller.instance.shieldBreak);
                 }
                 else if(Time.time - timeOfShowingShield > 0.5f && gameObject.name!="Boss")
                 {
@@ -87,7 +88,7 @@ public class Enemy : MonoBehaviour
         }
         if(!PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer) && Controller.instance.player.living && gameObject.name.ToLower().Contains("golem"))
         {
-            Controller.instance.PlayAudio(Controller.instance.golem);
+            Controller.instance.PlayAudio(Controller.instance.golem, gameObject.name.ToLower().Contains("big"));
         }
         if (shieldRenderer != null)
         {
@@ -112,6 +113,7 @@ public class Enemy : MonoBehaviour
             if(hasShield)
             {
                 timeOfShowingShield = Time.time;
+                Controller.instance.PlayAudio(Controller.instance.shield);
             }
             if (!hasShield)
             {

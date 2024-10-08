@@ -71,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
         canDash = true;
         living = true;
         hasDeathCard = true;
+        
     }
 
     public bool Invulnarable()
@@ -164,6 +165,7 @@ public class PlayerMovement : MonoBehaviour
         {
             KilledEnemyWhileDead = 0;
             STOP = true;
+            Controller.instance.PlayAudio(Controller.instance.realive);
             var moving = transform.DOMove(corpsePos, (new Vector2(center.transform.position.x, center.transform.position.y) - corpseCenter).magnitude * 0.05f).SetEase(Ease.InOutBack);
             moving.onComplete+= () =>
             {
@@ -173,7 +175,6 @@ public class PlayerMovement : MonoBehaviour
                     health = 3;
                     living = true;
                     timeOfGotHit= Time.time;
-                    Controller.instance.PlayAudio(Controller.instance.realive);
                 }
                 else
                 {
@@ -228,6 +229,7 @@ public class PlayerMovement : MonoBehaviour
             if (Time.time - timeOfC < 0.25f)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce + (transform.position.x > 210 ? jumpForce * 0.2f : 0));
+                Controller.instance.PlayAudio(Controller.instance.jump);
             }
             canDash = true;
         }
