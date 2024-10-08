@@ -255,7 +255,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.013413444}
+  m_Offset: {x: 0, y: 0.011308603}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -266,7 +266,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.54393435}
+  m_Size: {x: 1, y: 0.2967155}
   m_EdgeRadius: 0
 --- !u!95 &184840070
 Animator:
@@ -8539,7 +8539,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b53e5bd75d6f14990667e086853614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPos: {x: 0, y: 0, z: 0}
 --- !u!58 &476636208
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -8793,7 +8792,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.013413444}
+  m_Offset: {x: 0, y: 0.011308603}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -8804,7 +8803,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.54393435}
+  m_Size: {x: 1, y: 0.2967155}
   m_EdgeRadius: 0
 --- !u!212 &608118055 stripped
 SpriteRenderer:
@@ -10523,7 +10522,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.013413444}
+  m_Offset: {x: 0, y: 0.011308603}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -10534,7 +10533,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.54393435}
+  m_Size: {x: 1, y: 0.2967155}
   m_EdgeRadius: 0
 --- !u!95 &796195844
 Animator:
