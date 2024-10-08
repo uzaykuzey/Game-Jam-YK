@@ -16,23 +16,20 @@ public class BossIdle : StateMachineBehaviour
 
         if (phase == 1)
         {
-            waitTime = 50;
-        }
-        else if (phase == 2)
-        {
-            waitTime = 30;
+            waitTime = 40;
         }
         else
         {
-            waitTime = 25;
+            waitTime = 20;
         }
         IEnumerator StallExecution()
         {
             yield return new WaitForSeconds(waitTime / 100);
         }
-        int temp = Random.Range(0, 100);
-        if (temp < 40)
-        {
+        int temp = Random.Range(0 + (phase == 1 ? 0: 10), 100);
+        Controller.instance.bossOverlayRenderer.enabled = false;
+        if (temp < 30)
+        { 
             animator.SetTrigger("Run");
         }
         else

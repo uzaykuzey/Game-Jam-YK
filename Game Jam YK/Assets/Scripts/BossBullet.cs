@@ -5,21 +5,11 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    public Vector3 playerPos;
-
-    public static bool real = true;
-
-    private void Start()
+    public void FlyToPlayer(int phase)
     {
-        if(real)
+        transform.DOMove((Controller.instance.player.transform.position + new Vector3(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(-5f, 5f), 0) - transform.position).normalized * 50, 7.5f - (phase==1 ? 0: 1.5f)).onComplete += () =>
         {
-            real = false;
-            return;
-        }
-        transform.DOMove((Controller.instance.player.transform.position + new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0) - transform.position).normalized * 50, 4).onComplete += ()=> 
-        { 
-            Destroy(gameObject);        
+            Destroy(gameObject);
         };
     }
-
 }

@@ -20,16 +20,27 @@ public class BossScript : Enemy
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if(health<=5 && !activatedShieldYet)
+        if(health<=8 && !activatedShieldYet)
         {
             activatedShieldYet=true;
             hasShield = true;
+            GetComponent<BossActions>().phase = 2;
         }
 
         if(health<=0)
         {
             SceneManager.LoadScene("Ending");
         }
+
+        if(sr.sprite.name== "Last_boss_standing")
+        {
+            Controller.instance.bossOverlayRenderer.sprite = Controller.instance.normalOverlay;
+        }
+        else if(sr.sprite.name== "Last_boss_attack")
+        {
+            Controller.instance.bossOverlayRenderer.sprite = Controller.instance.attackOverlay;
+        }
+        
 
         GameObject[] allObjects = FindObjectsOfType<GameObject>();
 
@@ -46,7 +57,12 @@ public class BossScript : Enemy
             if(spawnOnce)
             {
                 spawnOnce = false;
-                Vector3 pos = new Vector3(Random.Range(-13.28f, 13.28f), Random.Range(-5.74f, 5.74f), -3);
+                Vector3 pos;
+                do
+                {
+                    pos = new Vector3(Random.Range(-13.28f, 13.28f), Random.Range(-5.74f, 5.74f), -3);
+                }
+                while ((Controller.instance.player.transform.position - pos).magnitude < 5);
                 GameObject o = Instantiate(deathCard);
                 o.transform.position = pos;
             }

@@ -29,6 +29,11 @@ public class Controller : MonoBehaviour
     public Sprite brokenCircle;
     public SpriteRenderer deathTarotRenderer;
     public SpriteRenderer countdown;
+    public GameObject cameraChecker;
+
+    public SpriteRenderer bossOverlayRenderer;
+    public Sprite normalOverlay;
+    public Sprite attackOverlay;
 
     public AudioClip music;
     public AudioClip teleport;
@@ -36,8 +41,12 @@ public class Controller : MonoBehaviour
     public AudioClip snowballs;
     public AudioClip realive;
     public AudioClip sword;
+    public AudioClip boom;
 
-    public AudioSource audioSource;
+    public AudioSource soundEffectPlayer;
+    public AudioSource MY_MUSIC_PLAYER;
+
+    private bool[] spinning;
 
     public void PlayAudio(AudioClip audioClip)
     {
@@ -79,11 +88,14 @@ public class Controller : MonoBehaviour
     void Start()
     {
         instance = this;
-        if(SceneManager.GetActiveScene().name=="Boss")
+        spinning = new bool[4];
+        if (SceneManager.GetActiveScene().name=="Boss")
         {
             return;
         }
         cameraPositions = GetAllChildren(cameraPositionsObject);
+        soundEffectPlayer.spatialBlend = 0.0f;
+        MY_MUSIC_PLAYER.spatialBlend=0.0f;
     }
 
     List<Vector3> GetAllChildren(GameObject parent)
@@ -101,9 +113,68 @@ public class Controller : MonoBehaviour
     {
         for (int i = 0; i < hearts.Length; i++)
         {
-            hearts[i].sprite = i < player.health ? fullHeart : noHeart;
+            if(i<player.health && hearts[i].sprite.name == noHeart.name && !spinning[i])
+            {
+                spinning[i] = true;
+                int index = i;
+                hearts[i].transform.DORotate(new Vector3(0, 90, 0), 0.15f).onComplete += () =>
+                {
+                    hearts[index].sprite = fullHeart;
+                    hearts[index].transform.DORotate(new Vector3(0, 0, 0), 0.15f).onComplete += () =>
+                    {
+                        spinning[index] = false;
+                    };
+                };
+            }
+            else if(i>=player.health && hearts[i].sprite.name == fullHeart.name && !spinning[i])
+            {
+                spinning[i] = true;
+                int index = i;
+                hearts[i].transform.DORotate(new Vector3(0, 90, 0), 0.15f).onComplete += ()=>
+                {
+                    hearts[index].sprite = noHeart;
+                    hearts[index].transform.DORotate(new Vector3(0, 180, 0), 0.15f).onComplete += () =>
+                    {
+                        spinning[index] = false;
+                    };
+                };
+            }
         }
-        deathTarotRenderer.sprite = player.hasDeathCard ? deathTarot : deathTarotBehind;
+
+        if (player.hasDeathCard && deathTarotRenderer.sprite.name == deathTarotBehind.name && !spinning[3])
+        {
+            spinning[3] = true;
+            deathTarotRenderer.transform.DORotate(new Vector3(0, 90, 0), 0.15f).onComplete += () =>
+            {
+                deathTarotRenderer.sprite = deathTarot;
+                deathTarotRenderer.transform.DORotate(new Vector3(0, 0, 0), 0.15f).onComplete += () =>
+                {
+                    spinning[3] = false;
+                };
+            };
+        }
+        else if (!player.hasDeathCard && deathTarotRenderer.sprite.name == deathTarot.name && !spinning[3])
+        {
+            spinning[3] = true;
+            deathTarotRenderer.transform.DORotate(new Vector3(0, 90, 0), 0.15f).onComplete += () =>
+            {
+                deathTarotRenderer.sprite = deathTarotBehind;
+                deathTarotRenderer.transform.DORotate(new Vector3(0, 180, 0), 0.15f).onComplete += () =>
+                {
+                    spinning[3] = false;
+                };
+            };
+        }
+
+        Vector3 viewPos = mainCamera.WorldToViewportPoint(cameraChecker.transform.position);
+
+        bool isVisible = (viewPos.x > 0 && viewPos.x < 1) &&
+                         (viewPos.y > 0 && viewPos.y < 1);
+
+        if(!isVisible)
+        {
+            mainCamera.transform.position += new Vector3(0, 0, -0.1f);
+        }
 
         if (SceneManager.GetActiveScene().name == "Boss")
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeathCard : MonoBehaviour
 {
-    private Vector2 basePosition;
+    public Vector3 basePosition;
     private BoxCollider2D bc;
     private SpriteRenderer sr;
     // Start is called before the first frame update
@@ -18,7 +18,7 @@ public class DeathCard : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = basePosition + new Vector2( 0, Mathf.Sin(Time.time*Mathf.PI) * 0.3f);
+        transform.position = basePosition + new Vector3( 0, Mathf.Sin(Time.time*Mathf.PI) * 0.3f, 0);
         float rot = (Time.time / 5f - Mathf.FloorToInt(Time.time / 5f)) * 360;
         transform.rotation = Quaternion.Euler(0, rot, 0);
         if(rot<=90 || rot>=270)

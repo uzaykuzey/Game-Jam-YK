@@ -59,6 +59,7 @@ public class Enemy : MonoBehaviour
         bc.enabled = false;
         rb.gravityScale = 0;
         youAreAlreadyDead = true;
+        Controller.instance.PlayAudio(Controller.instance.boom);
     }
 
     // Update is called once per frame
@@ -84,7 +85,7 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
-        if(!PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer))
+        if(!PlayerMovement.STOP && bc.IsTouchingLayers(Controller.instance.playerLayer) && Controller.instance.player.living && gameObject.name.ToLower().Contains("golem"))
         {
             Controller.instance.PlayAudio(Controller.instance.golem);
         }

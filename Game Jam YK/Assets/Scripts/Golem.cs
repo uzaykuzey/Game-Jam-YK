@@ -15,6 +15,11 @@ public class Golem : Enemy
             return;
         }
 
+        while(transform.position.y < -28)
+        {
+            transform.position += new Vector3(0, 1, 0);
+        }
+
         if (!Controller.instance.SameRoom(Controller.instance.player.transform.position, transform.position))
         {
             return;

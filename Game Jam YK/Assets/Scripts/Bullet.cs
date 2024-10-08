@@ -7,6 +7,7 @@ public class Bullet : MonoBehaviour
     public bool facingRight;
     public bool real;
     private Rigidbody2D rb;
+    private int currentDeg;
 
     private void Start()
     {
@@ -22,6 +23,8 @@ public class Bullet : MonoBehaviour
 
         if (real)
         {
+            currentDeg += 10;
+            transform.rotation = Quaternion.Euler(0, 0, currentDeg);
             return;
         }
         rb.velocity = new Vector2(5 * (facingRight ? 1: -1), 0);
