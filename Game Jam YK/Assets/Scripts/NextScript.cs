@@ -19,7 +19,7 @@ public class NextScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if(current==0)
         {
@@ -35,10 +35,19 @@ public class NextScript : MonoBehaviour
         {
             SceneManager.LoadScene("Castle");
         }
+
+        if(Controller.GetKey(Control.RightInput))
+        {
+            OnMouseDown();
+        }
     }
 
     private void OnMouseDown()
     {
+        if(Controller.InMenu)
+        {
+            return;
+        }
         current++;
     }
 }

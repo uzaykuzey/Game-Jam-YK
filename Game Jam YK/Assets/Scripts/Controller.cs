@@ -1,8 +1,19 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+public enum Control
+{
+    RightInput,
+    LeftInput,
+    DownInput,
+    Jump,
+    Dash,
+    Attack,
+    Settings
+}
 
 public class Controller : MonoBehaviour
 {
@@ -34,6 +45,11 @@ public class Controller : MonoBehaviour
     public SpriteRenderer bossOverlayRenderer;
     public Sprite normalOverlay;
     public Sprite attackOverlay;
+    public static SpriteRenderer settingsRenderer;
+    public static SpriteRenderer controlsRenderer;
+    public static GameObject settingsStuff;
+
+    public static int deathCondition;
 
     public AudioClip music;
     public AudioClip teleport;
@@ -52,10 +68,23 @@ public class Controller : MonoBehaviour
     private List<AudioSource> tempSources;
 
     private bool[] spinning;
+    
+    private static Dictionary<Control, KeyCode> controlMap;
+    public static bool dontPlayMusic;
+    public static bool dontPlaySound;
+    public static bool InMenu
+    {
+        get { return MainMenuAction.settingsOn || MainMenuAction.controlsOn; }
+    }
+
 
     public void PlayAudio(AudioClip audioClip, bool bigGolem=false)
     {
-        if(tempSources==null)
+        if(dontPlaySound)
+        {
+            return;
+        }
+        if (tempSources==null)
         {
             tempSources = new();
         }
@@ -122,14 +151,30 @@ public class Controller : MonoBehaviour
     void Start()
     {
         instance = this;
+        if(controlMap==null)
+        {
+            InitializeControlMap();
+        }
         spinning = new bool[4];
 
-        if (SceneManager.GetActiveScene().name=="Boss")
+        if (SceneManager.GetActiveScene().name!="Castle")
         {
             return;
         }
         cameraPositions = GetAllChildren(cameraPositionsObject);
         tempSources = new();
+    }
+
+    public static void InitializeControlMap()
+    {
+        controlMap = new();
+        controlMap.Add(Control.RightInput, KeyCode.RightArrow);
+        controlMap.Add(Control.LeftInput, KeyCode.LeftArrow);
+        controlMap.Add(Control.DownInput, KeyCode.DownArrow);
+        controlMap.Add(Control.Jump, KeyCode.C);
+        controlMap.Add(Control.Attack, KeyCode.Z);
+        controlMap.Add(Control.Dash, KeyCode.X);
+        controlMap.Add(Control.Settings, KeyCode.Escape);
     }
 
     List<Vector3> GetAllChildren(GameObject parent)
@@ -143,8 +188,23 @@ public class Controller : MonoBehaviour
         return children;
     }
 
+    private void Update()
+    {
+        MY_MUSIC_PLAYER.enabled = !dontPlayMusic;
+    }
+
     private void FixedUpdate()
     {
+        float scale = mainCamera.orthographicSize / 8.102688f;
+        if(settingsStuff!=null)
+        {
+            settingsStuff.transform.localScale = new Vector3(scale, scale, scale);
+            settingsStuff.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, settingsStuff.transform.position.z);
+        }
+        if (SceneManager.GetActiveScene().name != "Boss" && SceneManager.GetActiveScene().name != "Castle")
+        {
+            return;
+        }
         transform.position=mainCamera.transform.position;
         for (int i = 0; i < hearts.Length; i++)
         {
@@ -241,4 +301,79 @@ public class Controller : MonoBehaviour
         Vector3 v2 = GetClosestCameraPosition(pos2);
         return v1 == v2 || (v1.x > 90 && v2.x > 90);
     }
+
+    public static bool GetKey(Control control)
+    {
+        return controlMap.TryGetValue(control, out KeyCode value) && Input.GetKey(value);
+    }
+
+    public static bool GetKeyDown(Control control)
+    {
+        return controlMap.TryGetValue(control, out KeyCode value) && Input.GetKeyDown(value);
+    }
+
+    public static string GetControlSymbol(KeyCode value)
+    {
+        switch (value)
+        {
+            case KeyCode.RightArrow:
+                return "→";
+            case KeyCode.LeftArrow:
+                return "←";
+            case KeyCode.DownArrow:
+                return "↓";
+            case KeyCode.Space:
+                return "Space";
+            case KeyCode.LeftShift:
+                return "LShift";
+            case KeyCode.UpArrow:
+                return "↑";
+            case KeyCode.LeftControl:
+                return "LCtrl";
+            case KeyCode.Escape:
+                return "ESC";
+            default:
+                if (value >= KeyCode.A && value <= KeyCode.Z)
+                {
+                    return ((char)('A' + (value - KeyCode.A))) + "";
+                }
+                if (value >= KeyCode.Alpha0 && value <= KeyCode.Alpha9)
+                {
+                    return ((char)('0' + (value - KeyCode.Alpha0))) + "";
+                }
+                return "None";
+        }
+    }
+
+    public static string GetControlSymbol(Control control)
+    {
+        if(!controlMap.TryGetValue(control, out KeyCode value) || value==KeyCode.None)
+        {
+            return "None";
+        }
+        return GetControlSymbol(value);
+    }
+
+    public static void SwitchKey(Control control, KeyCode code)
+    {
+        if(code == KeyCode.Escape || (controlMap.TryGetValue(control, out KeyCode value1) && value1 == code))
+        {
+            return;
+        }
+        if(controlMap.ContainsValue(code))
+        {
+            foreach(Control c in controlMap.Keys)
+            {
+                if(controlMap.TryGetValue(c, out KeyCode value2) && value2==code)
+                {
+                    controlMap.Remove(c);
+                    controlMap.Add(c, KeyCode.None);
+                    break;
+                }
+            }
+        }
+        controlMap.Remove(control);
+        controlMap.Add(control, code);
+    }
+
 }

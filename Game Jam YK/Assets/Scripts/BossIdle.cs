@@ -28,7 +28,7 @@ public class BossIdle : StateMachineBehaviour
         }
         int temp = Random.Range(0 + (phase == 1 ? 0: 10), 100);
         Controller.instance.bossOverlayRenderer.enabled = false;
-        if (temp < 10)
+        if (temp < 15)
         { 
             animator.SetTrigger("Run");
         }

@@ -11,20 +11,29 @@ public class CastingBehavior : StateMachineBehaviour
         float cast = Random.Range(0.0f, 1.0f);
         looking = cast;
         Controller.instance.bossOverlayRenderer.enabled = true;
-        if (cast < 0.3f)
+        if(!animator.GetComponent<BossScript>().hasShield && (animator.transform.position - Controller.instance.player.transform.position).magnitude < 4)
         {
-            Controller.instance.bossOverlayRenderer.color = Color.yellow;
-            animator.SetTrigger("Wave");
+            if(Random.Range(0,3)==1)
+            {
+                Controller.instance.bossOverlayRenderer.color = Color.red;
+                animator.SetTrigger("Teleport");
+                return;
+            }
         }
-        else if (cast < 0.8f)
+        if (cast < 0.2f)
+        {
+            Controller.instance.bossOverlayRenderer.color = Color.red;
+            animator.SetTrigger("Teleport");
+        }
+        else if (cast < 0.6f)
         {
             Controller.instance.bossOverlayRenderer.color = Color.green;
             animator.SetTrigger("MagicBall");
         }
         else
         {
-            Controller.instance.bossOverlayRenderer.color = Color.red;
-            animator.SetTrigger("Teleport");
+            Controller.instance.bossOverlayRenderer.color = Color.yellow;
+            animator.SetTrigger("Wave");
         }
 
 

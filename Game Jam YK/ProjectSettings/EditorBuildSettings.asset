@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Boss.unity
     guid: 0bced5ae31e201a47a3cc87527e25f83
   - enabled: 1
+    path: Assets/Scenes/You Died.unity
+    guid: 05048d321810610438f2119a7d18421c
+  - enabled: 1
     path: Assets/Scenes/Ending.unity
     guid: 429e6c69bc1d4954ab4faf54811deeb5
   m_configObjects: {}

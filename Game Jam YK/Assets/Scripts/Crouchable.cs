@@ -21,7 +21,11 @@ public class Crouchable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.DownArrow) && Time.time - timeOfCrouch >= 0.5)
+        if (Controller.InMenu)
+        {
+            return;
+        }
+        if (Input.GetKey(KeyCode.DownArrow) && Time.time - timeOfCrouch >= 0.5)
         {
             timeOfCrouch = Time.time;
         }

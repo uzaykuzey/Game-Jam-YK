@@ -48043,6 +48043,14 @@ PrefabInstance:
       propertyPath: corpse
       value: 
       objectReference: {fileID: 220323794}
+    - target: {fileID: 3457105212557878552, guid: d9aeb786c9d1b304c8dc2c91f0c73669, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3457105212557878552, guid: d9aeb786c9d1b304c8dc2c91f0c73669, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4141779390858070004, guid: d9aeb786c9d1b304c8dc2c91f0c73669, type: 3}
       propertyPath: m_Name
       value: Player
@@ -48089,6 +48097,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7312774550692602549, guid: d9aeb786c9d1b304c8dc2c91f0c73669, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8572182672476038045, guid: d9aeb786c9d1b304c8dc2c91f0c73669, type: 3}
+      propertyPath: m_DrawMode
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

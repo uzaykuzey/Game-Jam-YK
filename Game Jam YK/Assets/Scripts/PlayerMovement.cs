@@ -82,24 +82,28 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.Space))
+        if (Controller.InMenu)
+        {
+            return;
+        }
+        if (Controller.GetKey(Control.Jump))
         {
             timeOfC = Time.time;
         }
-        rb.gravityScale = Mathf.Sign(rb.velocity.y) == -1 ? baseGravity * 2 : Input.GetKey(KeyCode.C) ? baseGravity * 0.75f : baseGravity;
+        rb.gravityScale = Mathf.Sign(rb.velocity.y) == -1 ? baseGravity * 2 : Controller.GetKey(Control.Jump) ? baseGravity * 0.75f : baseGravity;
 
-        if (!Dashing() && Input.GetKey(KeyCode.X) && canDash && Time.time - timeOfDash > 0.5f)
+        if (!Dashing() && Controller.GetKey(Control.Dash) && canDash && Time.time - timeOfDash > 0.5f)
         {
             timeOfDash = Time.time;
-            dashRight = LookingRight;
+            dashRight = (LookingRight || Controller.GetKeyDown(Control.RightInput)) && !Controller.GetKeyDown(Control.LeftInput);
             canDash = false;
         }
 
-        if (!Attacking() && Input.GetKey(KeyCode.Z) && Time.time - timeOfAttack > 0.5f && living)
+        if (!Attacking() && Controller.GetKey(Control.Attack) && Time.time - timeOfAttack > 0.5f && living)
         {
             Controller.instance.PlayAudio(Controller.instance.sword);
             timeOfAttack =Time.time;
-            downAttack = Input.GetKey(KeyCode.DownArrow) && Airborne();
+            downAttack = Controller.GetKey(Control.DownInput) && Airborne();
             if(!downAttack)
             {
                 rb.velocity += new Vector2((LookingRight ? -1 : 1) * 5, 0);
@@ -123,9 +127,11 @@ public class PlayerMovement : MonoBehaviour
         return !groundChecker.IsTouchingLayers(Controller.instance.groundLayer);
     }
 
-    public void GameOver()
+    public void GameOver(bool didntHaveDeathCard)
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Controller.deathCondition = (didntHaveDeathCard ? 1: 0) + (SceneManager.GetActiveScene().name=="Castle" ? 0: 2);
+        MainMenuAction.CloseEverything();
+        SceneManager.LoadScene("You Died");
     }
 
     private void FixedUpdate()
@@ -138,7 +144,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (!hasDeathCard)
                 {
-                    GameOver();
+                    GameOver(true);
                 }
                 living = false;
                 hasDeathCard = false;
@@ -161,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
 
         corpse.GetComponent<SpriteRenderer>().enabled = !living;
         Controller.instance.countdown.enabled = !living;
-        if(!living && (Time.time-timeOfDeath>=5 || (Input.GetKey(KeyCode.Z) && Time.time - timeOfDeath >= 2)) && !STOP)
+        if(!living && (Time.time-timeOfDeath>=5 || (Controller.GetKey(Control.Attack) && Time.time - timeOfDeath >= 2)) && !STOP)
         {
             KilledEnemyWhileDead = 0;
             STOP = true;
@@ -178,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    GameOver();
+                    GameOver(false);
                 }
             };
         }
@@ -195,13 +201,13 @@ public class PlayerMovement : MonoBehaviour
             }
             
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Controller.GetKey(Control.RightInput))
         {
             rb.AddForce(new Vector2(force, 0));
             LookingRight = true;
             walking = true;
         }
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        else if (Controller.GetKey(Control.LeftInput))
         {
             rb.AddForce(new Vector2(-force, 0));
             LookingRight = false;
@@ -320,8 +326,8 @@ public class PlayerMovement : MonoBehaviour
         if(!living)
         {
             Vector2 pos = center.transform.position;
-            float angle = Mathf.Atan2(pos.y - corpseCenter.y, pos.x - corpseCenter.x);
-            connection.transform.localScale = new Vector3(connection.transform.localScale.x, (pos- corpseCenter).magnitude, connection.transform.localScale.z);
+            float angle = Mathf.Atan2(pos.y - corpseCenter.y, pos.x - corpseCenter.x); 
+            connection.transform.localScale = new Vector3(connection.transform.localScale.x, (pos - corpseCenter).magnitude * 60f/100f, connection.transform.localScale.z);
             connection.transform.SetPositionAndRotation((pos + corpseCenter) / 2f, Quaternion.Euler(0, 0, angle*180f/Mathf.PI + 90f));
         }
 
