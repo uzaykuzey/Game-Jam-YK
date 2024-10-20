@@ -195,7 +195,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 Controller.instance.countdown.sprite = numberSprites[4 - Mathf.FloorToInt(Time.time - timeOfDeath)];
             }
-            catch(IndexOutOfRangeException _)
+            catch
             {
                 Controller.instance.countdown.enabled = false;
             }

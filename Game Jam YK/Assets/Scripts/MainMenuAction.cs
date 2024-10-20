@@ -48,7 +48,6 @@ public class MainMenuAction : MonoBehaviour
         if(defaultDeltaTime==-1)
         {
             defaultDeltaTime = Time.deltaTime;
-            print(defaultDeltaTime);
         }
         if(settingsStuff==null)
         {
@@ -100,7 +99,6 @@ public class MainMenuAction : MonoBehaviour
                 {
                     if (int.TryParse(t.name, out int value))
                     {
-                        print(t.name);
                         texts[value] = t.GetComponent<TextMeshProUGUI>();
                     }
                 }
@@ -117,7 +115,7 @@ public class MainMenuAction : MonoBehaviour
 
     private void Update()
     {
-        if(type==MenuAction.StartGame || type==MenuAction.Retry)
+        if(type==MenuAction.StartGame)
         {
             if(Controller.GetKey(Control.Jump))
             {
@@ -201,17 +199,21 @@ public class MainMenuAction : MonoBehaviour
 
     public static void CloseEverything()
     {
-        settingsOn = false;
-        controlsOn = false;
-        LastAction = MenuAction.Back;
-        foreach (BoxCollider2D b in settingsColliders)
+        try
         {
-            b.enabled = false;
+            settingsOn = false;
+            controlsOn = false;
+            LastAction = MenuAction.Back;
+            foreach (BoxCollider2D b in settingsColliders)
+            {
+                b.enabled = false;
+            }
+            foreach (BoxCollider2D b in controlColliders)
+            {
+                b.enabled = false;
+            }
         }
-        foreach (BoxCollider2D b in controlColliders)
-        {
-            b.enabled = false;
-        }
+        catch { }
     }
 
     private void OnMouseDown()

@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class BossActions : MonoBehaviour
 {
-    [SerializeField] private float cycleLengthX = 2;
-    [SerializeField] private float HorizontalPos = 10;
+    //[SerializeField] private float cycleLengthX = 2;
+    //[SerializeField] private float HorizontalPos = 10;
     [SerializeField] public float[] platformY;
     [SerializeField] public float Xleft;
     [SerializeField] public float Xright;

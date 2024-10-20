@@ -26,6 +26,7 @@ public class BossIdle : StateMachineBehaviour
         {
             yield return new WaitForSeconds(waitTime / 100);
         }
+        StallExecution();
         int temp = Random.Range(0 + (phase == 1 ? 0: 10), 100);
         Controller.instance.bossOverlayRenderer.enabled = false;
         if (temp < 15)

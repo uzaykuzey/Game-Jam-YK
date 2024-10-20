@@ -140,7 +140,7 @@ public class Controller : MonoBehaviour
                 distance = v;
             }
         }
-        return new Vector3(distance.x, distance.y, mainCamera.transform.position.z);
+        return new Vector3(distance.x, distance.y + 4f / Mathf.PI * Mathf.Atan(mainCamera.orthographicSize - 8.102688f), mainCamera.transform.position.z);
     }
 
     private List<Vector3> cameraPositions;
@@ -268,7 +268,7 @@ public class Controller : MonoBehaviour
 
         if(!isVisible)
         {
-            mainCamera.transform.position += new Vector3(0, 0, -0.1f);
+            mainCamera.orthographicSize += 0.5f;
         }
 
         if (SceneManager.GetActiveScene().name == "Boss")
