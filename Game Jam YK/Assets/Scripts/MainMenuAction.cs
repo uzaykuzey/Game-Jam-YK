@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,8 +27,16 @@ public enum MenuAction
     Retry
 }
 
+
+
+
 public class MainMenuAction : MonoBehaviour
 {
+    #if UNITY_WEBGL
+        [DllImport("__Internal")]
+        private static extern void OpenURLInSameTab(string url);
+    #endif
+
     public MenuAction type;
     [SerializeField] private GameObject settingsStuff;
     public static bool settingsOn;
@@ -257,7 +266,16 @@ public class MainMenuAction : MonoBehaviour
                     SceneManager.LoadScene("Cutscene");
                     break;
                 case MenuAction.ExitGame:
-                    Application.Quit();
+                    if (Application.platform == RuntimePlatform.WebGLPlayer)
+                    {
+                        #if UNITY_WEBGL
+                            OpenURLInSameTab("https://uzay-kuzey.itch.io/");
+                        #endif
+                    }
+                    else
+                    {
+                        Application.Quit();
+                    }
                     break;
                 case MenuAction.ReturnToMainMenu:
                     SceneManager.LoadScene("Main Menu");
