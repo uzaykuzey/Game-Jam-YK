@@ -84,6 +84,10 @@ public class Controller : MonoBehaviour
         {
             return;
         }
+        if((audioClip.name.ToLower() == "jump" && Random.value < 0.80f))
+        {
+            return;
+        }
         if (tempSources==null)
         {
             tempSources = new();

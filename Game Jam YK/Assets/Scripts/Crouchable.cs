@@ -6,8 +6,6 @@ using UnityEngine.Tilemaps;
 public class Crouchable : MonoBehaviour
 {
 
-    private static float timeOfCrouch;
-
     private CompositeCollider2D tCollider;
 
     public float yPos;
@@ -15,7 +13,6 @@ public class Crouchable : MonoBehaviour
     private void Start()
     {
         tCollider=GetComponent<CompositeCollider2D>();
-        timeOfCrouch = -10;
     }
 
     // Update is called once per frame
@@ -25,11 +22,7 @@ public class Crouchable : MonoBehaviour
         {
             return;
         }
-        if (Input.GetKey(KeyCode.DownArrow) && Time.time - timeOfCrouch >= 0.5)
-        {
-            timeOfCrouch = Time.time;
-        }
-        if(Controller.instance.player.transform.position.y > yPos && !(Time.time-timeOfCrouch < 0.5 && Time.time - timeOfCrouch>0.2 && Input.GetKey(KeyCode.DownArrow)))
+        if (Controller.instance.player.transform.position.y > yPos && !(Controller.GetKey(Control.DownInput)))
         {
             tCollider.forceSendLayers = Controller.instance.SendEverythingMask;
         }

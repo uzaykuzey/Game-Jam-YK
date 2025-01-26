@@ -24,7 +24,13 @@ public enum MenuAction
     ChangeDash,
     ChangeAttack,
     Back,
-    Retry
+    Retry,
+    ResetRight,
+    ResetLeft,
+    ResetDown,
+    ResetJump,
+    ResetDash,
+    ResetAttack
 }
 
 
@@ -39,6 +45,8 @@ public class MainMenuAction : MonoBehaviour
 
     public MenuAction type;
     [SerializeField] private GameObject settingsStuff;
+    [SerializeField] private SpriteRenderer musicOn;
+    [SerializeField] private SpriteRenderer soundOn;
     public static bool settingsOn;
     public static bool controlsOn;
     public static bool dontDestroyDone = false;
@@ -49,6 +57,7 @@ public class MainMenuAction : MonoBehaviour
 
     private static float defaultDeltaTime=-1;
     private static float counter;
+
 
     private static MenuAction LastAction;
 
@@ -67,7 +76,7 @@ public class MainMenuAction : MonoBehaviour
             dontDestroyDone = true;
             settingsColliders = new();
             controlColliders = new();
-            texts = new TextMeshProUGUI[7];
+            texts = new TextMeshProUGUI[6];
             DontDestroyOnLoad(settingsStuff);
         }
         else
@@ -124,6 +133,16 @@ public class MainMenuAction : MonoBehaviour
 
     private void Update()
     {
+        if(soundOn != null)
+        {
+            soundOn.enabled = settingsOn && !Controller.dontPlaySound;
+        }
+        if (musicOn != null)
+        {
+            musicOn.enabled = settingsOn && !Controller.dontPlayMusic;
+        }
+
+
         if(type==MenuAction.StartGame)
         {
             if(Controller.GetKey(Control.Jump))
@@ -167,6 +186,7 @@ public class MainMenuAction : MonoBehaviour
                 }
             }
         }
+
 
         if (Input.GetKeyDown(KeyCode.Escape) && counter> 1)
         {
@@ -237,7 +257,7 @@ public class MainMenuAction : MonoBehaviour
                     Controller.dontPlayMusic = !Controller.dontPlayMusic;
                     break;
                 case MenuAction.Sound:
-                    Controller.dontPlaySound= !Controller.dontPlaySound;
+                    Controller.dontPlaySound = !Controller.dontPlaySound;
                     break;
                 case MenuAction.ReturnToMainMenu:
                     CloseEverything();
@@ -253,9 +273,29 @@ public class MainMenuAction : MonoBehaviour
         }
         else if(controlsOn)
         {
-            if(type==MenuAction.Back)
+            switch (type)
             {
-                OpenSettings();
+                case MenuAction.Back:
+                    OpenSettings();
+                    break;
+                case MenuAction.ResetRight:
+                    Controller.SwitchKey(Control.RightInput, KeyCode.RightArrow);
+                    break;
+                case MenuAction.ResetLeft:
+                    Controller.SwitchKey(Control.LeftInput, KeyCode.LeftArrow);
+                    break;
+                case MenuAction.ResetDown:
+                    Controller.SwitchKey(Control.DownInput, KeyCode.DownArrow);
+                    break;
+                case MenuAction.ResetJump:
+                    Controller.SwitchKey(Control.Jump, KeyCode.C);
+                    break;
+                case MenuAction.ResetAttack:
+                    Controller.SwitchKey(Control.Attack, KeyCode.Z);
+                    break;
+                case MenuAction.ResetDash:
+                    Controller.SwitchKey(Control.Dash, KeyCode.X);
+                    break;
             }
         }
         else

@@ -283,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Dashing())
         {
-            rb.velocity = new Vector2(maxSpeed * 3.5f * (dashRight ? 1 : -1), 0);
+            rb.velocity = new Vector2(maxSpeed * 5f * (dashRight ? 1 : -1), 0);
             LookingRight = dashRight;
             currentSprite = dashSprite;
         }
