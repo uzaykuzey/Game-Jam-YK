@@ -235,7 +235,6 @@ public class PlayerMovement : MonoBehaviour
             if (Time.time - timeOfC < 0.25f)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce + (transform.position.x > 210 ? jumpForce * 0.2f : 0));
-                Controller.instance.PlayAudio(Controller.instance.jump);
             }
             canDash = true;
         }

@@ -61,7 +61,6 @@ public class Controller : MonoBehaviour
     public AudioClip laserBlast;
     public AudioClip shield;
     public AudioClip shieldBreak;
-    public AudioClip jump;
 
     public AudioSource MY_MUSIC_PLAYER;
 
@@ -81,10 +80,6 @@ public class Controller : MonoBehaviour
     public void PlayAudio(AudioClip audioClip, bool bigGolem=false)
     {
         if(dontPlaySound)
-        {
-            return;
-        }
-        if((audioClip.name.ToLower() == "jump" && Random.value < 0.80f))
         {
             return;
         }
